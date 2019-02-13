@@ -97,7 +97,12 @@ newInstance nid (extHost, extPort) cfg handle = do
 
 -- | Insert a Node into the NodeTree
 insertNode :: (Serialize i, Ord i) => KademliaInstance i a -> Node i -> IO ()
-insertNode inst@(KI _ _ (KS sTree _ _) _ cfg) node = do
+insertNode inst@(KI me _ (KS sTree _ _) _ cfg) node =
+  -- Stuff breaks in confusing ways if we insert ourselves into the node tree.
+  -- If we were planning on continuing to use this, we should figure out what's
+  -- going on, but since we're transitioning to something else, this hack is
+  -- fine. Ideally this should log. (Echo Nolan February 2019)
+  unless (me == node) $ do
     currentTime <- floor <$> getPOSIXTime
     unlessM (isNodeBanned inst $ peer node) $ atomically $ do
         tree <- readTVar sTree
