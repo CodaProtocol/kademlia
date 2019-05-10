@@ -74,7 +74,7 @@ openOnL host port id' lim rq logInfo logError = withSocketsDo $ do
     -- Get addr to bind to
     serveraddrs <- getAddrInfo
                  (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                 (Nothing)
+                 (Just host)
                  (Just port)
 
     -- TODO: support IPV6 by binding to two sockets
