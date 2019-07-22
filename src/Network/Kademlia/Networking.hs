@@ -134,6 +134,7 @@ startRecvProcess kh = do
     tId <- forkIO $ (withSocketsDo . forever $ do
         -- Read from socket
         (received, addr) <- S.recvFrom (kSock kh) 1500
+        logError kh ("Received a message from: " ++ show addr)
         -- Try to create peer
         peer <- toPeer addr
         case peer of
